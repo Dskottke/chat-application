@@ -29,6 +29,7 @@ export default function useChatWebSocket(receiveMessage: (message: string) => vo
     });
 
     const send = (message: string | undefined) => {
+        if (message === undefined || message === "")  return;
         webSocket.sendMessage(JSON.stringify(message));
     }
 

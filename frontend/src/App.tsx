@@ -7,10 +7,9 @@ function App() {
     const [messages, setMessages] = useState<string[]>([]);
 
     const receiveMessage = (message:string)=>{
-        console.log("Received message from backend", message)
         setMessages([
             ...messages,
-            message]);
+            JSON.parse(message)]);
     }
 
     const {send,connected} = useChatWebSocket(receiveMessage);
