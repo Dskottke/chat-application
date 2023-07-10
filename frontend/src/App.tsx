@@ -2,11 +2,12 @@ import {useEffect, useState} from 'react'
 import './App.css'
 import useChatWebSocket from "./useChatWebSocket";
 import axios from "axios";
+import {AppUser} from "./models";
 
 function App() {
     const [message, setMessage] = useState<string>()
     const [messages, setMessages] = useState<string[]>([]);
-    const [appUser, setAppUser] = useState<any>();
+    const [appUser, setAppUser] = useState<AppUser>();
 
     useEffect(() => {
         axios.get( '/api/appusers/me')
