@@ -4,7 +4,7 @@ import {useState} from "react";
 
 export default function useChatWebSocket(receiveMessage: (message: string) => void) {
 
-    const [connected, setConnected] = useState<boolean | string>(false);
+    const [connected, setConnected] = useState<boolean>(false);
 
     let host = window.location.host;
     let protocolAndHost;
@@ -13,7 +13,7 @@ export default function useChatWebSocket(receiveMessage: (message: string) => vo
     } else {
         protocolAndHost = "ws://" + host;
     }
-    let webserviceUrl = protocolAndHost +  '/api/ws/chat';
+    let webserviceUrl = protocolAndHost + '/api/ws/chat';
 
 
     const webSocket = useWebSocket(webserviceUrl, {
@@ -21,18 +21,18 @@ export default function useChatWebSocket(receiveMessage: (message: string) => vo
             setConnected(true);
         },
         onMessage: (event: any) => {
-           receiveMessage(event.data)
+            receiveMessage(event.data)
         },
         onClose: () => {
-            setConnected("Connection was closed or could not be established. Please reload.")
+            setConnected(false)
         },
+
     });
 
     const send = (message: string | undefined) => {
-        if (message === undefined || message === "")  return;
+        if (message === undefined || message === "") return;
         webSocket.sendMessage(JSON.stringify(message));
     }
-
     return {connected, send};
 
 }
