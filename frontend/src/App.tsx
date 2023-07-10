@@ -2,12 +2,14 @@ import {useEffect, useState} from 'react'
 import './App.css'
 import useChatWebSocket from "./useChatWebSocket";
 import axios from "axios";
-import {AppUser} from "./models";
+import NavBar from "./NavBar";
+import {useGlobalContext} from "./Context";
+import {AppContext} from "./models";
 
 function App() {
     const [message, setMessage] = useState<string>()
     const [messages, setMessages] = useState<string[]>([]);
-    const [appUser, setAppUser] = useState<AppUser>();
+    const {appUser,setAppUser} : AppContext = useGlobalContext();
 
     useEffect(() => {
         axios.get( '/api/appusers/me')
@@ -35,13 +37,7 @@ function App() {
   }
     return (
         <div className="App">
-            {appUser && <div>
-                <p>
-                    Logged in as {appUser.name}
-                </p>
-                <img src={appUser.avatar} alt={appUser.name}/>
-                </div>}
-
+            <NavBar/>
           {messages.map((message,index)=>{
             return <div key={index}>{message}</div>
           })}
