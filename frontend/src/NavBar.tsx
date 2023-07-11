@@ -3,14 +3,14 @@ import {useGlobalContext} from "./Context";
 import {AppContext} from "./models";
 
 function NavBar() {
-   const {appUser} : AppContext  = useGlobalContext()
+    const {appUser}: AppContext = useGlobalContext()
 
     return (
-        <nav className="navigation">
-            <p>
-                Logged in as <span className={"highlight"}>{appUser?.name}</span>
-            </p>
-            <img className={"navigation-logo"} src={appUser?.avatar} alt={appUser?.name}/>
+        <nav className="navbar">
+            <div className={"navbar-header"}>
+            <p>{appUser?.name} </p>
+                <img className={"navbar-logo"} alt={"profile-picture"} src={appUser?.avatar} />
+            </div>
         </nav>
     );
 }

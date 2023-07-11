@@ -7,10 +7,11 @@ export const useGlobalContext = () => useContext(GlobalContext)
 function Context(props: { children: ReactNode }) {
     const [appUser, setAppUser] = useState<AppUser>();
 
+
     const value : AppContext = useMemo(() => {
         return {
             appUser,
-            setAppUser
+            setAppUser,
         }
     },[appUser])
 

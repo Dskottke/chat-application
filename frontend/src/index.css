@@ -8,6 +8,7 @@
 }
 
 html {
+    background-color: var(--primary-300);
     font-size: 100%;
 }
 
@@ -48,24 +49,105 @@ html {
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-4: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    --scrollbarBG: #CFD8DC;
+    --thumbBG: #90A4AE;
 }
 
-.navigation{
-    font-size: 1rem;
+.app {
+    position: absolute;
     display: flex;
-    font-variant-caps: all-petite-caps;
-    justify-content: end;
-    gap: 1rem;
-    color : var(--textColor);
-    letter-spacing: var(--letterSpacing);
-    background-color: var(--grey);
+    justify-content: center;
     align-items: center;
-    height: 3rem;
+    width: 100%;
+    height: 100%;
 }
-.navigation-logo{
-    width: 2rem;
-    margin-right: 1rem;
+.main-frame{
+    display: flex;
+    box-shadow: var(--shadow-4);
 }
-.highlight{
-    color: var(--primary-400)
+
+.chat {
+    position: relative;
+    width: 80vh;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #90b8d5;
+    border-radius: var(--borderRadius);
+}
+
+.text-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    height: 90%;
+    overflow-y: scroll;
+}
+
+.text-area::-webkit-scrollbar {
+    width: 10px;
+    height: 15px;
+}
+
+.text-area::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom right,grey  0%, #726e6e);
+    border-radius: 5px;
+}
+
+.message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1em;
+    background: rgba(255, 255, 255, 0.64);
+   min-width: 1em;
+   min-height: 3em;
+    border-radius: var(--borderRadius);
+}
+
+.message-text {
+    color: #000000;
+    padding: 1vh;
+}
+
+.chat-input {
+    position: absolute;
+    background-color: white;
+    border: none;
+    color: black;
+    bottom: 0;
+    padding: 10px;
+    margin-top: 20px;
+    width: 100%;
+    height: 5vh;
+}
+
+.chat-input:focus {
+    outline: none;
+}
+.navbar{
+    display: grid;
+    grid-template-rows: auto 1fr;
+    width: 15rem;
+    height: 80vh;
+    background-color: var(--grey);
+    border-right: groove 1px grey;
+}
+.navbar-header{
+    position: relative;
+    display: flex;
+    gap : 1rem;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    letter-spacing: var(--letterSpacing);
+    height: 10vh;
+    width: 100%;
+    background-color: #151414;
+}
+.navbar-logo{
+    width: 40px;
+    height:40px;
 }
