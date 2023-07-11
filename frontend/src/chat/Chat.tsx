@@ -1,9 +1,10 @@
 import React from 'react';
 import ChatTextArea from "./ChatTextArea";
 import ChatAction from "./ChatAction";
+import {MessageFromUser} from "../models";
 
 export type Props = {
-    send: (message: string) => void,
+    send: (messageFromUser: MessageFromUser) => void,
     messages: string[],
     setMessage : (message : string) => void
     message : string

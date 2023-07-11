@@ -1,21 +1,24 @@
 import React, {createContext, ReactNode, useContext, useMemo, useState} from 'react';
-import {AppContext, AppUser} from "./models";
+import {AppContext, AppUser, AppUserAuthentication} from "./models";
 
 export const GlobalContext = createContext({})
 export const useGlobalContext = () => useContext(GlobalContext)
 
 function Context(props: { children: ReactNode }) {
-    const [appUser, setAppUser] = useState<AppUser>();
-
-
-    const value : AppContext = useMemo(() => {
+    const [currentAppUsers, setCurrentAppUsers] = useState<AppUser[]>([])
+    const [appUserAuthentication, setAppUserAuthentication] = useState<AppUserAuthentication>();
+    const appUser = appUserAuthentication?.appUser;
+    const value: AppContext = useMemo(() => {
         return {
+            setCurrentAppUsers,
+            currentAppUsers,
             appUser,
-            setAppUser,
+            setAppUserAuthentication,
+            appUserAuthentication
         }
-    },[appUser])
+    }, [appUser, currentAppUsers, appUserAuthentication])
 
-        return (
+    return (
         <GlobalContext.Provider value={value}>
             {props.children}
         </GlobalContext.Provider>

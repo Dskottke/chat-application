@@ -4,18 +4,22 @@ import useChatWebSocket from "./useChatWebSocket";
 import axios from "axios";
 import NavBar from "./NavBar";
 import {useGlobalContext} from "./Context";
-import {AppContext} from "./models";
+import {AppContext, MessageToUser} from "./models";
 import Chat from "./chat/Chat";
 
 function App() {
-    const {setAppUser} : AppContext= useGlobalContext();
+    const {
+        setAppUserAuthentication,
+        appUserAuthentication,
+        setCurrentAppUsers,
+    }: AppContext = useGlobalContext();
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<string[]>([]);
 
     useEffect(() => {
         axios.get('/api/appusers/me')
             .then(response => response.data)
-            .then(setAppUser)
+            .then(setAppUserAuthentication)
             .catch(() => {
                 if (window.location.href.startsWith('http://localhost:5173/')) {
                     window.location.href = 'http://localhost:8080/redirectTo?redirectUrl=' + encodeURIComponent(window.location.href);
@@ -25,14 +29,21 @@ function App() {
 
 
     const receiveMessage = (message: string) => {
-        if (setMessages && messages) {
+        const messageToUser = JSON.parse(message) as MessageToUser;
+        const chatMessage = messageToUser.chatMessage;
+        if (chatMessage) {
             setMessages([
                 ...messages,
-                JSON.parse(message)]);
+                chatMessage]);
+        }
+        const currentAppUsers = messageToUser.currentAppUsers;
+        console.log(currentAppUsers)
+        if (currentAppUsers && setCurrentAppUsers) {
+            setCurrentAppUsers(currentAppUsers)
         }
     }
 
-    const {send, connected} = useChatWebSocket(receiveMessage);
+    const {send, connected} = useChatWebSocket(appUserAuthentication?.pendingToken, receiveMessage);
 
 
     if (!connected) {
@@ -42,12 +53,12 @@ function App() {
     return (
         <div className={"app"}>
             <div className={"main-frame"}>
-            <NavBar/>
-            <Chat
-                message={message}
-                setMessage={setMessage}
-                send={send}
-                messages={messages}/>
+                <NavBar/>
+                <Chat
+                    message={message}
+                    setMessage={setMessage}
+                    send={send}
+                    messages={messages}/>
             </div>
         </div>
     )

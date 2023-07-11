@@ -1,8 +1,9 @@
 import useWebSocket from "react-use-websocket";
 import {useState} from "react";
+import {MessageFromUser} from "./models";
 
 
-export default function useChatWebSocket(receiveMessage: (message: string) => void) {
+export default function useChatWebSocket(pendingToken: string | undefined, receiveMessage: (message: string) => void) {
 
     const [connected, setConnected] = useState<boolean>(false);
 
@@ -19,6 +20,7 @@ export default function useChatWebSocket(receiveMessage: (message: string) => vo
     const webSocket = useWebSocket(webserviceUrl, {
         onOpen: () => {
             setConnected(true);
+            send({pendingToken:pendingToken})
         },
         onMessage: (event: any) => {
             receiveMessage(event.data)
@@ -29,9 +31,8 @@ export default function useChatWebSocket(receiveMessage: (message: string) => vo
 
     });
 
-    const send = (message: string | undefined) => {
-        if (message === undefined || message === "") return;
-        webSocket.sendMessage(JSON.stringify(message));
+    const send = (messageFromUser : MessageFromUser) => {
+        webSocket.sendMessage(JSON.stringify(messageFromUser));
     }
     return {connected, send};
 

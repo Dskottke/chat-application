@@ -1,8 +1,9 @@
 import React from 'react';
+import {MessageFromUser} from "../models";
 
 
 export type Props = {
-    send: (message: string) => void,
+    send: (messageFromUser : MessageFromUser) => void,
     setMessage : (message : string) => void,
     message : string,
 }
@@ -11,7 +12,7 @@ function ChatAction(props: Props) {
 
     const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-            props.send(props.message);
+            props.send({chatMessage:props.message});
             props.setMessage("");
         }
 
