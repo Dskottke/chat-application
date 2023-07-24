@@ -1,6 +1,7 @@
 import React from 'react';
+import {ChatMessage} from "../models";
 export type Props={
-    messages : string[]
+    messages : ChatMessage[]
 }
 function ChatTextArea(props: Props) {
 
@@ -10,7 +11,9 @@ function ChatTextArea(props: Props) {
                     return (
                         <div key={index} className={"message"}>
                             <div className={"message-text"}>
-                                {message}
+                                {message.message}
+                                {message.appUser.name}
+                                {message.time}
                             </div>
                         </div>
                     )

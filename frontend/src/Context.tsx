@@ -8,6 +8,7 @@ function Context(props: { children: ReactNode }) {
     const [currentAppUsers, setCurrentAppUsers] = useState<AppUser[]>([])
     const [appUserAuthentication, setAppUserAuthentication] = useState<AppUserAuthentication>();
     const appUser = appUserAuthentication?.appUser;
+    console.log(appUserAuthentication?.pendingToken)
     const value: AppContext = useMemo(() => {
         return {
             setCurrentAppUsers,

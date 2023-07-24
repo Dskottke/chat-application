@@ -2,6 +2,11 @@ export type AppUser = {
     name: string,
     avatar: string,
 }
+export type ChatMessage = {
+    appUser: AppUser,
+    message: string,
+    time: number
+}
 export type AppUserAuthentication = {
     appUser: AppUser,
     pendingToken: string
@@ -20,6 +25,6 @@ export type MessageFromUser = {
     chatMessage?: string
 }
 export type MessageToUser = {
-    chatMessage: string,
+    chatMessage: ChatMessage,
     currentAppUsers: AppUser[]
 }

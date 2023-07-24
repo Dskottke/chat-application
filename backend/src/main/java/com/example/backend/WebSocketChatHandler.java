@@ -12,6 +12,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -47,18 +48,26 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             validateSession(session, pendingToken);
         }
         if (messageFromUser.chatMessage() != null) {
-            sendMessagesToAllUser(session, message, messageFromUser);
+            sendMessagesToAllUser(session, messageFromUser);
         }
 
         sendAllCurrentUser(session);
     }
 
-    private void sendMessagesToAllUser(WebSocketSession session, TextMessage message, MessageFromUser messageFromUser) throws IOException {
+    private void sendMessagesToAllUser(WebSocketSession session, MessageFromUser messageFromUser) throws IOException {
         String chatMessage = messageFromUser.chatMessage();
+        var currentUser = userBySession.get(session);
+        if(currentUser == null) {
+            logger.warn("No current user");
+            return;
+        }
+        MessageToUser messageToUser = MessageToUser.builder()
+                .chatMessage(new ChatMessage(chatMessage, currentUser, LocalDateTime.now()))
+                .build();
+        TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(messageToUser));
         logger.info("new chat message received: {}", chatMessage);
         for (WebSocketSession sess : sessions) {
-            if (sess == session) continue;
-            session.sendMessage(message);
+            sess.sendMessage(textMessage);
         }
     }
 
@@ -66,13 +75,19 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     private void validateSession(WebSocketSession session, String pendingToken) throws IOException {
         var appUser = pendingTokens.get(pendingToken);
         if (appUser == null) {
-            logger.error("could not find a user for pending token: {}", pendingToken);
-            session.close();
-        }
-        if (userBySession.containsValue(appUser)) {
+            logger.warn("Invalid pending token");
             return;
         }
+        if (userBySession.containsValue(appUser)) {
+            for (var entry : userBySession.entrySet()) {
+                if (entry.getValue().equals(appUser)) {
+                    userBySession.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
         userBySession.put(session, appUser);
+        session.getAttributes().put("currentUser", appUser);
         pendingTokens.remove(pendingToken);
     }
 
@@ -97,6 +112,14 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     }
 
     public String generatePendingToken(AppUser appUser) {
+        if (pendingTokens.containsValue(appUser)) {
+            for (var entry : pendingTokens.entrySet()) {
+                if (entry.getValue().equals(appUser)) {
+                    pendingTokens.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
         var token = UUID.randomUUID().toString();
         pendingTokens.put(token, appUser);
         return token;

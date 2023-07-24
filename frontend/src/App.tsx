@@ -4,17 +4,15 @@ import useChatWebSocket from "./useChatWebSocket";
 import axios from "axios";
 import NavBar from "./NavBar";
 import {useGlobalContext} from "./Context";
-import {AppContext, MessageToUser} from "./models";
+import {AppContext, ChatMessage, MessageToUser} from "./models";
 import Chat from "./chat/Chat";
 
 function App() {
     const {
         setAppUserAuthentication,
         appUserAuthentication,
-        setCurrentAppUsers,
     }: AppContext = useGlobalContext();
-    const [message, setMessage] = useState<string>("");
-    const [messages, setMessages] = useState<string[]>([]);
+
 
     useEffect(() => {
         axios.get('/api/appusers/me')
@@ -28,40 +26,18 @@ function App() {
     }, []);
 
 
-    const receiveMessage = (message: string) => {
-        const messageToUser = JSON.parse(message) as MessageToUser;
-        const chatMessage = messageToUser.chatMessage;
-        if (chatMessage) {
-            setMessages([
-                ...messages,
-                chatMessage]);
-        }
-        const currentAppUsers = messageToUser.currentAppUsers;
-        console.log(currentAppUsers)
-        if (currentAppUsers && setCurrentAppUsers) {
-            setCurrentAppUsers(currentAppUsers)
-        }
+    if(!appUserAuthentication?.pendingToken || !appUserAuthentication?.appUser){
+        return <div>Not logged in</div>
     }
 
-    const {send, connected} = useChatWebSocket(appUserAuthentication?.pendingToken, receiveMessage);
-
-
-    if (!connected) {
-        return <div>Connecting...</div>
-    }
-
-    return (
-        <div className={"app"}>
-            <div className={"main-frame"}>
-                <NavBar/>
-                <Chat
-                    message={message}
-                    setMessage={setMessage}
-                    send={send}
-                    messages={messages}/>
+        return (
+            <div className={"app"}>
+                <div className={"main-frame"}>
+                    <NavBar/>
+                    <Chat appUserAuthentication={appUserAuthentication}/>
+                </div>
             </div>
-        </div>
-    )
-}
+        )
+    }
 
 export default App
