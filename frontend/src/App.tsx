@@ -4,15 +4,12 @@ import useChatWebSocket from "./useChatWebSocket";
 import axios from "axios";
 import NavBar from "./NavBar";
 import {useGlobalContext} from "./Context";
-import {AppContext, ChatMessage, MessageToUser} from "./models";
+import {AppContext, AppUserAuthentication, ChatMessage, MessageToUser} from "./models";
 import Chat from "./chat/Chat";
 
 function App() {
-    const {
-        setAppUserAuthentication,
-        appUserAuthentication,
-    }: AppContext = useGlobalContext();
 
+ const [appUserAuthentication, setAppUserAuthentication] = useState<AppUserAuthentication>();
 
     useEffect(() => {
         axios.get('/api/appusers/me')
@@ -33,7 +30,7 @@ function App() {
         return (
             <div className={"app"}>
                 <div className={"main-frame"}>
-                    <NavBar/>
+                    <NavBar appUser={appUserAuthentication.appUser}/>
                     <Chat appUserAuthentication={appUserAuthentication}/>
                 </div>
             </div>

@@ -1,15 +1,17 @@
 import React from 'react';
 import {useGlobalContext} from "./Context";
-import {AppContext} from "./models";
+import {AppContext, AppUser} from "./models";
+type Props = {
+ appUser: AppUser
 
-function NavBar() {
-    const {appUser}: AppContext = useGlobalContext()
+}
+function NavBar(props:Props) {
 
     return (
         <nav className="navbar">
             <div className={"navbar-header"}>
-            <p>{appUser?.name} </p>
-                <img className={"navbar-logo"} alt={"profile-picture"} src={appUser?.avatar} />
+            <p>{props.appUser?.name} </p>
+                <img className={"navbar-logo"} alt={"profile-picture"} src={props.appUser?.avatar} />
             </div>
         </nav>
     );

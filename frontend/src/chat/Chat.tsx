@@ -17,7 +17,7 @@ function Chat(props: Props) {
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-    const {send, connected} = useChatWebSocket(props.appUserAuthentication?.pendingToken, (message: string) => {
+    const {send, connected} = useChatWebSocket(props.appUserAuthentication.pendingToken, (message: string) => {
         const messageToUser = JSON.parse(message) as MessageToUser;
         const chatMessage = messageToUser.chatMessage;
         if (chatMessage) {

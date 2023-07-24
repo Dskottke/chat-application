@@ -74,8 +74,14 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     private void validateSession(WebSocketSession session, String pendingToken) throws IOException {
         var appUser = pendingTokens.get(pendingToken);
+
+        if(userBySession.containsKey(session)) {
+            logger.warn("Session already validated");
+            return;
+        }
         if (appUser == null) {
-            logger.warn("Invalid pending token");
+            logger.warn("No app user for pending token");
+            session.close();
             return;
         }
         if (userBySession.containsValue(appUser)) {
@@ -112,14 +118,6 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     }
 
     public String generatePendingToken(AppUser appUser) {
-        if (pendingTokens.containsValue(appUser)) {
-            for (var entry : pendingTokens.entrySet()) {
-                if (entry.getValue().equals(appUser)) {
-                    pendingTokens.remove(entry.getKey());
-                    break;
-                }
-            }
-        }
         var token = UUID.randomUUID().toString();
         pendingTokens.put(token, appUser);
         return token;
